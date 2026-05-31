@@ -1,22 +1,42 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import classes from "./page.module.css";
+import MealsGrid from "@/components/meals/meals-grid";
+import { getMeals } from "@/lib/meals";
 
-export default function Meals() {
-  const meals = [
-    { id: 1, name: "Spaghetti-Carbonara" },
-    { id: 2, name: "Chicken-Alfredo" },
-    { id: 3, name: "Vegetable-Stir-Fry" },
-  ];
+
+async function Meals() {
+  const meals = await getMeals();
+  return <MealsGrid meals={meals} />
+}
+
+export default function MealsPage() {
+
+
+
   return (
-    <div>
-        <h1>Meals</h1>
-        <p>Discover delicious meals shared by our food-loving community. Browse through a variety of recipes, from quick and easy dishes to gourmet creations. Whether you're looking for breakfast ideas, lunch inspiration, or dinner delights, you'll find something to satisfy your cravings. Join us in celebrating the joy of food and share your own culinary masterpieces with fellow food enthusiasts!</p>
-        {
-          meals.map(meal => (
-            <div key={meal.id}>
-              <Link href={`/meals/${meal.name}`}>{meal.name}</Link>
-            </div>
-          ))
-        }
-    </div>
+    <>
+      <header className={classes.header}>
+
+        <h1>Delicious meals, Created {''}
+          <span className={classes.highlight}>by you</span>
+        </h1>
+        <p>
+          Choose your favorite recipe and cook it yourself. it is easy and fun!
+        </p>
+        <p className={classes.cta}>
+          <Link href="/meals/share">
+            Share Your Favorite Recipe
+          </Link>
+        </p>
+      </header>
+      <main className={classes.main}>
+        <Suspense fallback={<p className={classes.loading}>
+          Fetching meals...
+        </p>}>
+          <Meals />
+        </Suspense>
+      </main>
+    </>
   )
 }
