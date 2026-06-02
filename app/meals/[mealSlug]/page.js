@@ -1,14 +1,27 @@
-import {getMeal} from '@/lib/meals';
+import { getMeal } from '@/lib/meals';
 import classes from './page.module.css';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-export default async function MealDetailsPage({params}) {
+export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const meal = getMeal(resolvedParams.mealSlug);
 
   if (!meal) {
-   notFound();
+    notFound();
+  }
+
+  return {
+    title: meal.title,
+    description: meal.summary
+  }
+}
+export default async function MealDetailsPage({ params }) {
+  const resolvedParams = await params;
+  const meal = getMeal(resolvedParams.mealSlug);
+
+  if (!meal) {
+    notFound();
   }
 
   meal.instructions = meal.instructions.replace(/\n/g, '<br>');
